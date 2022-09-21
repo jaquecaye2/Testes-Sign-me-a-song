@@ -4,7 +4,7 @@ import { prisma } from "../src/database";
 import { faker } from '@faker-js/faker';
 
 beforeEach(async () => {
-  await prisma.$executeRaw`TRUNCATE TABLE "recommendations"`;
+  await prisma.$executeRaw`TRUNCATE TABLE "recommendations" RESTART IDENTITY`;
 });
 
 const recommendations = {
