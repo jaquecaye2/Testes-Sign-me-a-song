@@ -119,24 +119,26 @@ describe("Testa POST /recommendations/:id/upvote", () => {
   it("Deve retornar status 200 se informado um id válido", async () => {
     await prisma.recommendation.createMany(recommendations);
 
-    const findAll = await prisma.recommendation.findMany()
+    const findAll = await prisma.recommendation.findMany();
 
-    const id = findAll[0].id
+    const id = findAll[0].id;
 
-    const findInitial = await prisma.recommendation.findFirst({where: {id}})
-    const initialScore = findInitial.score
+    const findInitial = await prisma.recommendation.findFirst({
+      where: { id },
+    });
+    const initialScore = findInitial.score;
 
     const result = await supertest(app).post(`/recommendations/${id}/upvote`);
 
-    const findFinal = await prisma.recommendation.findFirst({where: {id}})
-    const finalScore = findFinal.score
+    const findFinal = await prisma.recommendation.findFirst({ where: { id } });
+    const finalScore = findFinal.score;
 
     expect(result.status).toBe(200);
-    expect(finalScore - initialScore).toBe(1)
+    expect(finalScore - initialScore).toBe(1);
   });
 
-  it("Deve retornar status 404 se informado um id inválido",async () => {
-    const id = 999999999999
+  it("Deve retornar status 404 se informado um id inválido", async () => {
+    const id = 999999999999;
 
     const result = await supertest(app).post(`/recommendations/${id}/upvote`);
 
@@ -145,9 +147,34 @@ describe("Testa POST /recommendations/:id/upvote", () => {
 });
 
 describe("Testa POST /recommendations/:id/downvote", () => {
-  it.todo("Deve retornar status 200 se informado um id válido"); // verificar se diminuiu a quantidade no banco
+  it("Deve retornar status 200 se informado um id válido", async () => {
+    await prisma.recommendation.createMany(recommendations);
 
-  it.todo("Deve retornar status 404 se informado um id inválido");
+    const findAll = await prisma.recommendation.findMany();
+
+    const id = findAll[0].id;
+
+    const findInitial = await prisma.recommendation.findFirst({
+      where: { id },
+    });
+    const initialScore = findInitial.score;
+
+    const result = await supertest(app).post(`/recommendations/${id}/downvote`);
+
+    const findFinal = await prisma.recommendation.findFirst({ where: { id } });
+    const finalScore = findFinal.score;
+
+    expect(result.status).toBe(200);
+    expect(finalScore - initialScore).toBe(-1);
+  });
+
+  it("Deve retornar status 404 se informado um id inválido", async () => {
+    const id = 999999999999;
+
+    const result = await supertest(app).post(`/recommendations/${id}/downvote`);
+
+    expect(result.status).toBe(404);
+  });
 });
 
 describe("Testa GET /recommendations", () => {
