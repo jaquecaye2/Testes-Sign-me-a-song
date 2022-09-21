@@ -134,7 +134,7 @@ describe("Testa POST /recommendations/:id/upvote", () => {
     const finalScore = findFinal.score;
 
     expect(result.status).toBe(200);
-    expect(finalScore - initialScore).toBe(1);
+    expect(finalScore - initialScore).toEqual(1);
   });
 
   it("Deve retornar status 404 se informado um id inválido", async () => {
@@ -165,7 +165,7 @@ describe("Testa POST /recommendations/:id/downvote", () => {
     const finalScore = findFinal.score;
 
     expect(result.status).toBe(200);
-    expect(finalScore - initialScore).toBe(-1);
+    expect(finalScore - initialScore).toEqual(-1);
   });
 
   it("Deve retornar status 404 se informado um id inválido", async () => {
@@ -178,9 +178,13 @@ describe("Testa POST /recommendations/:id/downvote", () => {
 });
 
 describe("Testa GET /recommendations", () => {
-  it.todo(
-    "Deve retornar status 200 e o body no formato de Array com no máximo 10 itens"
-  );
+  it("Deve retornar status 200 e o body no formato de Array com no máximo 10 itens", async () => {
+    const result = await supertest(app).get("/recommendations");
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Array);
+    expect(result.body.length).toBeLessThanOrEqual(10)
+  });
 });
 
 describe("Testa GET /recommendations/:id", () => {
