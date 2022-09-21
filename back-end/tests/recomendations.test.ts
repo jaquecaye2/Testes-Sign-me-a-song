@@ -1,6 +1,7 @@
 import supertest from "supertest";
 import app from "../src/app";
 import { prisma } from "../src/database";
+import { faker } from '@faker-js/faker';
 
 beforeEach(async () => {
   await prisma.$executeRaw`TRUNCATE TABLE "recommendations"`;
@@ -223,9 +224,17 @@ describe("Testa GET /recommendations/random", () => {
 });
 
 describe("Testa GET /recommendations/top/:amount", () => {
-  it.todo(
-    "Deve retornar status 200 e resposta no formato de array com a quantidade de itens informada na rota"
-  );
+  it("Deve retornar status 200 e resposta no formato de array com a quantidade de itens informada na rota", async () => {
+    await prisma.recommendation.createMany(recommendations);
+
+    const amount = Number(faker.finance.amount(1,10,0))
+
+    const result = await supertest(app).get(`/recommendations/top/${amount}`);
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Array);
+    expect(result.body.length).toEqual(amount);
+  });
 });
 
 afterAll(async () => {
