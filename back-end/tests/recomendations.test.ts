@@ -198,12 +198,12 @@ describe("Testa GET /recommendations/:id", () => {
     const result = await supertest(app).get(`/recommendations/${id}`);
 
     expect(result.status).toBe(200);
-    expect(result.body).toBeInstanceOf(Object)
-    expect(result.body).toEqual(findAll[0])
+    expect(result.body).toBeInstanceOf(Object);
+    expect(result.body).toEqual(findAll[0]);
   });
 
-  it("Deve retornar status 404 se informado um id inválido",async () => {
-    const id = 9999999999999
+  it("Deve retornar status 404 se informado um id inválido", async () => {
+    const id = 9999999999999;
 
     const result = await supertest(app).get(`/recommendations/${id}`);
 
@@ -212,7 +212,14 @@ describe("Testa GET /recommendations/:id", () => {
 });
 
 describe("Testa GET /recommendations/random", () => {
-  it.todo("Deve retornar status 200 e resposta no formato de objeto");
+  it("Deve retornar status 200 e resposta no formato de objeto", async () => {
+    await prisma.recommendation.createMany(recommendations);
+
+    const result = await supertest(app).get("/recommendations/random");
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object);
+  });
 });
 
 describe("Testa GET /recommendations/top/:amount", () => {
