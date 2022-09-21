@@ -183,16 +183,32 @@ describe("Testa GET /recommendations", () => {
 
     expect(result.status).toBe(200);
     expect(result.body).toBeInstanceOf(Array);
-    expect(result.body.length).toBeLessThanOrEqual(10)
+    expect(result.body.length).toBeLessThanOrEqual(10);
   });
 });
 
 describe("Testa GET /recommendations/:id", () => {
-  it.todo(
-    "Deve retornar status 200 se informado um id válido e resposta no formato de objeto"
-  );
+  it("Deve retornar status 200 se informado um id válido e resposta no formato de objeto", async () => {
+    await prisma.recommendation.createMany(recommendations);
 
-  it.todo("Deve retornar status 404 se informado um id inválido");
+    const findAll = await prisma.recommendation.findMany();
+
+    const id = findAll[0].id;
+
+    const result = await supertest(app).get(`/recommendations/${id}`);
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Object)
+    expect(result.body).toEqual(findAll[0])
+  });
+
+  it("Deve retornar status 404 se informado um id inválido",async () => {
+    const id = 9999999999999
+
+    const result = await supertest(app).get(`/recommendations/${id}`);
+
+    expect(result.status).toBe(404);
+  });
 });
 
 describe("Testa GET /recommendations/random", () => {
