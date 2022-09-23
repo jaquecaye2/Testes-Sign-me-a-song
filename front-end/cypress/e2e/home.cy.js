@@ -1,18 +1,18 @@
 beforeEach(async () => {
-  await cy.request("POST", "http://localhost:5001/e2e/reset", {});
+  await cy.request("POST", "http://localhost:5000/e2e/reset", {});
 });
 
 describe("Testando Página Home", () => {
   it("Verificar listagem de no máximo 10 recomendações, criação da recomendação na página Home e likes e deslikes na recomendação", async () => {
-    cy.intercept("GET", "http://localhost:5001/recommendations").as(
+    cy.intercept("GET", "http://localhost:5000/recommendations").as(
       "showRecommendations"
     );
 
-    cy.intercept("POST", "http://localhost:5001/recommendations/1/upvote").as(
+    cy.intercept("POST", "http://localhost:5000/recommendations/1/upvote").as(
       "likeRecommendation"
     );
 
-    cy.intercept("POST", "http://localhost:5001/recommendations/1/downvote").as(
+    cy.intercept("POST", "http://localhost:5000/recommendations/1/downvote").as(
       "deslikeRecommendation"
     );
 

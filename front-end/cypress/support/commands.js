@@ -23,7 +23,7 @@ Cypress.Commands.add("createRecommendation", () => {
   cy.get("#name").type(recommendation.name);
   cy.get("#url").type(recommendation.link);
 
-  cy.intercept("POST", "http://localhost:5001/recommendations").as(
+  cy.intercept("POST", "http://localhost:5000/recommendations").as(
     "createRecommendation"
   );
 
