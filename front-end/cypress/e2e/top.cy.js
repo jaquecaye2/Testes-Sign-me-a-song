@@ -6,14 +6,14 @@ describe("Testando Página Top", () => {
       "showTopRecommendations"
     );
 
-    cy.get("#pageTop").click()
+    cy.get("#pageTop").click();
 
     cy.wait("@showTopRecommendations");
 
-    cy.url().should('equal', 'http://localhost:3000/top');
+    cy.url().should("equal", "http://localhost:3000/top");
 
     cy.get("article").should(($article) => {
-      expect($article).to.have.length.of.at.most(10)
-    })
+      expect($article).to.have.length.of.at.most(10);
+    });
   });
 });

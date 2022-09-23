@@ -1,5 +1,5 @@
 import { Recommendation } from "@prisma/client";
-import { recommendationRepository } from "../repositories/recommendationRepository";
+import recommendationRepository from "../repositories/recommendationRepository";
 import { conflictError, notFoundError } from "../utils/errorUtils";
 
 export type CreateRecommendationData = Omit<Recommendation, "id" | "score">;
@@ -36,6 +36,7 @@ async function downvote(id: number) {
 
 async function getByIdOrFail(id: number) {
   const recommendation = await recommendationRepository.find(id);
+
   if (!recommendation) throw notFoundError();
 
   return recommendation;
@@ -54,6 +55,7 @@ async function getRandom() {
   const scoreFilter = getScoreFilter(random);
 
   const recommendations = await getByScore(scoreFilter);
+  
   if (recommendations.length === 0) {
     throw notFoundError();
   }
@@ -83,7 +85,7 @@ function getScoreFilter(random: number) {
   return "lte";
 }
 
-export const recommendationService = {
+export default {
   insert,
   upvote,
   downvote,

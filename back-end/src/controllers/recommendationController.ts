@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { recommendationSchema } from "../schemas/recommendationsSchemas";
-import { recommendationService } from "../services/recommendationsService";
+import recommendationService from "../services/recommendationsService";
 import { wrongSchemaError } from "../utils/errorUtils";
 
 async function insert(req: Request, res: Response) {
