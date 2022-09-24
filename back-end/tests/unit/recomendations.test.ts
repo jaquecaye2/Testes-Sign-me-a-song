@@ -103,6 +103,22 @@ describe("Testes unitários do recommendations service", () => {
     expect(recommendationRepository.updateScore).toBeCalled();
   });
 
+  it("Testa a função 'downvote/upvote' quando ocorre falha ao encontrar o id", async () => {
+    const id = 2;
+
+    jest
+      .spyOn(recommendationRepository, "find")
+      .mockImplementationOnce((): any => {});
+
+    const promise = recommendationService.downvote(id);
+
+    expect(recommendationRepository.find).toBeCalled();
+    expect(promise).rejects.toEqual({
+      type: "not_found",
+      message: "",
+    });
+  });
+
   it("Testa a função 'downvote' com score da recomendação menor que -5", async () => {
     const id = 2;
 
@@ -177,7 +193,16 @@ describe("Testes unitários do recommendations service", () => {
     expect(result).not.toBe(null);
   });
 
-  it("Testa a função 'getRandom'", async () => {    
+  it("Testa a função 'getRandom'", async () => {
+    const random = Math.random();
+    let scoreFilter = "";
+
+    if (random < 0.7) {
+      scoreFilter = "gt";
+    }
+
+    scoreFilter = "lte";
+
     const recommendation = {
       name: faker.name.fullName(),
       youtubeLink: `https://www.youtube.com/watch?v=${faker.random.alphaNumeric(
@@ -205,7 +230,7 @@ describe("Testes unitários do recommendations service", () => {
     expect(recommendationRepository.findAll).toBeCalled();
     await expect(promise).rejects.toEqual({
       type: "not_found",
-      message: ""
+      message: "",
     });
   });
 });
