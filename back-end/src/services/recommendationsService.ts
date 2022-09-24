@@ -56,7 +56,7 @@ async function getRandom() {
 
   const recommendations = await getByScore(scoreFilter);
   
-  if (recommendations.length === 0) {
+  if (!recommendations) {
     throw notFoundError();
   }
 

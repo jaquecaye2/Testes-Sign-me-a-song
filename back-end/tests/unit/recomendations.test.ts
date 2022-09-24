@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker";
 
 import recommendationRepository from "../../src/repositories/recommendationRepository";
 import recommendationService from "../../src/services/recommendationsService";
+import { notFoundError } from "../../src/utils/errorUtils";
 
 beforeEach(() => {
   jest.resetAllMocks();
@@ -44,15 +45,15 @@ describe("Testes unitários do recommendations service", () => {
       .mockImplementationOnce((): any => {
         return {
           name: recommendation.name,
-          youtubeLink: recommendation.youtubeLink
-        }
+          youtubeLink: recommendation.youtubeLink,
+        };
       });
 
     const promise = recommendationService.insert(recommendation);
 
     expect(promise).rejects.toEqual({
-      type: 'conflict',
-      message: 'Recommendations names must be unique'
+      type: "conflict",
+      message: "Recommendations names must be unique",
     });
   });
 
@@ -144,14 +145,14 @@ describe("Testes unitários do recommendations service", () => {
       .spyOn(recommendationRepository, "findAll")
       .mockImplementationOnce((): any => {
         return {
-          recommendation
-        }
+          recommendation,
+        };
       });
 
     const result = await recommendationService.get();
 
     expect(recommendationRepository.findAll).toBeCalled();
-    expect(result).not.toBe(null)
+    expect(result).not.toBe(null);
   });
 
   it("Testa a função 'getTop'", async () => {
@@ -162,22 +163,49 @@ describe("Testes unitários do recommendations service", () => {
       )}`,
     };
 
-    const amount = 10
-
     jest
       .spyOn(recommendationRepository, "getAmountByScore")
       .mockImplementationOnce((): any => {
         return {
-          recommendation
-        }
+          recommendation,
+        };
       });
 
     const result = await recommendationService.getTop(10);
 
     expect(recommendationRepository.getAmountByScore).toBeCalled();
-    expect(result).not.toBe(null)
+    expect(result).not.toBe(null);
   });
 
-  it("Testa a função 'getRandom'", async () => {
+  it("Testa a função 'getRandom'", async () => {    
+    const recommendation = {
+      name: faker.name.fullName(),
+      youtubeLink: `https://www.youtube.com/watch?v=${faker.random.alphaNumeric(
+        11
+      )}`,
+    };
+
+    jest
+      .spyOn(recommendationRepository, "findAll")
+      .mockImplementationOnce((): any => {
+        return [recommendation, recommendation, recommendation];
+      });
+
+    const result = await recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+    expect(result).not.toBe(null);
+  });
+
+  it("Testa a função 'getRandom' com erro", async () => {
+    jest.spyOn(recommendationRepository, "findAll").mockResolvedValueOnce([]);
+
+    const promise = recommendationService.getRandom();
+
+    expect(recommendationRepository.findAll).toBeCalled();
+    await expect(promise).rejects.toEqual({
+      type: "not_found",
+      message: ""
+    });
   });
 });
